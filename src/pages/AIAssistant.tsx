@@ -5,75 +5,161 @@ import CyberCard from "@/components/CyberCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
+import { toast } from "@/hooks/use-toast";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-const quickResponses: Record<string, string> = {
-  "what is phishing": "**Phishing** is a cyberattack where criminals impersonate legitimate organizations through emails, texts, or websites to trick you into revealing sensitive information like passwords, credit card numbers, or social security numbers.\n\n### How to protect yourself:\n- **Verify sender addresses** carefully — look for subtle misspellings\n- **Don't click suspicious links** — hover to preview the URL first\n- **Enable 2FA** on all important accounts\n- **Never share passwords** via email or messages\n- Use our **Phishing Detector** tool to scan suspicious messages!",
-  "how to create a strong password": "### Creating a Strong Password\n\nA strong password should be:\n\n1. **At least 12-16 characters long**\n2. **Mix of character types**: uppercase, lowercase, numbers, symbols\n3. **Not based on personal info** (birthdays, pet names, etc.)\n4. **Unique for each account**\n\n### Best Practices:\n- Use a **passphrase**: `Correct-Horse-Battery-Staple!42`\n- Use a **password manager** like 1Password or Bitwarden\n- Enable **two-factor authentication** everywhere\n- **Never reuse** passwords across sites\n\nTry our **Password Checker** to test your password strength!",
-  "what is malware": "**Malware** (malicious software) is any program designed to harm your device or steal data.\n\n### Common Types:\n| Type | What it does |\n|------|-------------|\n| **Virus** | Attaches to files and spreads |\n| **Ransomware** | Encrypts files, demands payment |\n| **Trojan** | Disguises as legitimate software |\n| **Spyware** | Secretly monitors your activity |\n| **Worm** | Self-replicates across networks |\n\n### Protection Tips:\n- Keep your OS and software **updated**\n- Use reputable **antivirus** software\n- **Don't download** from untrusted sources\n- **Scan attachments** before opening",
-  "what is a vpn": "A **VPN (Virtual Private Network)** creates an encrypted tunnel between your device and the internet.\n\n### Benefits:\n- 🔒 **Encrypts your traffic** — protects on public Wi-Fi\n- 🌍 **Hides your IP address** — adds anonymity\n- 🛡️ **Bypasses restrictions** — access content securely\n\n### When to use a VPN:\n- On **public Wi-Fi** (cafes, airports)\n- When accessing **sensitive accounts**\n- For **remote work** connections\n\n### Choosing a VPN:\n- Look for **no-log policies**\n- Choose providers with **strong encryption** (AES-256)\n- Avoid free VPNs — they may sell your data",
-};
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/cyber-chat`;
 
-const getResponse = (input: string): string => {
-  const lower = input.toLowerCase().trim();
-  
-  for (const [key, response] of Object.entries(quickResponses)) {
-    if (lower.includes(key) || key.includes(lower)) return response;
+async function streamChat({
+  messages,
+  onDelta,
+  onDone,
+}: {
+  messages: Message[];
+  onDelta: (deltaText: string) => void;
+  onDone: () => void;
+}) {
+  const resp = await fetch(CHAT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+    },
+    body: JSON.stringify({ messages }),
+  });
+
+  if (!resp.ok) {
+    const errorData = await resp.json().catch(() => ({}));
+    throw new Error(errorData.error || `Request failed (${resp.status})`);
   }
 
-  if (/password/i.test(lower)) return quickResponses["how to create a strong password"];
-  if (/phish/i.test(lower)) return quickResponses["what is phishing"];
-  if (/malware|virus|ransomware/i.test(lower)) return quickResponses["what is malware"];
-  if (/vpn/i.test(lower)) return quickResponses["what is a vpn"];
+  if (!resp.body) throw new Error("No response body");
 
-  if (/two.?factor|2fa|mfa/i.test(lower)) {
-    return "**Two-Factor Authentication (2FA)** adds an extra layer of security by requiring two forms of verification.\n\n### Types:\n- 📱 **Authenticator apps** (Google Authenticator, Authy) — Recommended!\n- 📧 **Email codes** — Better than nothing\n- 🔑 **Hardware keys** (YubiKey) — Most secure\n- 📲 **SMS codes** — Least secure (SIM-swapping risk)\n\n**Always enable 2FA** on email, banking, and social media accounts.";
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let textBuffer = "";
+  let streamDone = false;
+
+  while (!streamDone) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    textBuffer += decoder.decode(value, { stream: true });
+
+    let newlineIndex: number;
+    while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+      let line = textBuffer.slice(0, newlineIndex);
+      textBuffer = textBuffer.slice(newlineIndex + 1);
+
+      if (line.endsWith("\r")) line = line.slice(0, -1);
+      if (line.startsWith(":") || line.trim() === "") continue;
+      if (!line.startsWith("data: ")) continue;
+
+      const jsonStr = line.slice(6).trim();
+      if (jsonStr === "[DONE]") {
+        streamDone = true;
+        break;
+      }
+
+      try {
+        const parsed = JSON.parse(jsonStr);
+        const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+        if (content) onDelta(content);
+      } catch {
+        textBuffer = line + "\n" + textBuffer;
+        break;
+      }
+    }
   }
 
-  if (/safe|secure|protect/i.test(lower)) {
-    return "### General Cybersecurity Tips\n\n1. 🔐 Use **strong, unique passwords** for each account\n2. 🛡️ Enable **two-factor authentication**\n3. 🔄 Keep **software updated** regularly\n4. ⚠️ Be **cautious with links** and attachments\n5. 📡 Use a **VPN** on public networks\n6. 💾 **Back up data** regularly\n7. 🔍 Monitor your accounts for **unusual activity**\n\nUse our tools to check your security posture!";
+  // Final flush
+  if (textBuffer.trim()) {
+    for (let raw of textBuffer.split("\n")) {
+      if (!raw) continue;
+      if (raw.endsWith("\r")) raw = raw.slice(0, -1);
+      if (raw.startsWith(":") || raw.trim() === "") continue;
+      if (!raw.startsWith("data: ")) continue;
+      const jsonStr = raw.slice(6).trim();
+      if (jsonStr === "[DONE]") continue;
+      try {
+        const parsed = JSON.parse(jsonStr);
+        const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+        if (content) onDelta(content);
+      } catch { /* ignore */ }
+    }
   }
 
-  return "I'm your CyberGuard AI assistant. I can help with questions about:\n\n- 🎣 **Phishing** — how to identify and avoid it\n- 🔐 **Passwords** — creating and managing strong ones\n- 🦠 **Malware** — types and protection\n- 🌐 **VPNs** — how they work and when to use them\n- 🔒 **2FA** — setting up two-factor authentication\n- 🛡️ **General security** — best practices\n\nAsk me anything about cybersecurity!";
-};
+  onDone();
+}
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "👋 Hello! I'm your **CyberGuard AI Assistant**. I can answer questions about cybersecurity, help you understand threats, and teach you how to stay safe online.\n\nTry asking me about **phishing**, **passwords**, **malware**, or **VPNs**!" },
+    { role: "assistant", content: "👋 Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!" },
   ]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!input.trim() || isTyping) return;
-    const userMsg = input.trim();
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+    const userMsg: Message = { role: "user", content: input.trim() };
     setInput("");
-    setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
-    setIsTyping(true);
+    setMessages((prev) => [...prev, userMsg]);
+    setIsLoading(true);
 
-    setTimeout(() => {
-      const response = getResponse(userMsg);
-      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
-      setIsTyping(false);
-    }, 800 + Math.random() * 700);
+    let assistantSoFar = "";
+    const allMessages = [...messages, userMsg].filter(m => m.role === "user" || m.role === "assistant");
+
+    const upsertAssistant = (chunk: string) => {
+      assistantSoFar += chunk;
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant" && prev.length > 1 && assistantSoFar.startsWith(chunk.length > 0 ? assistantSoFar.slice(0, -chunk.length) || chunk : chunk)) {
+          return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantSoFar } : m));
+        }
+        if (last?.role === "assistant" && assistantSoFar.length > chunk.length) {
+          return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantSoFar } : m));
+        }
+        return [...prev, { role: "assistant" as const, content: assistantSoFar }];
+      });
+    };
+
+    try {
+      await streamChat({
+        messages: allMessages,
+        onDelta: (chunk) => upsertAssistant(chunk),
+        onDone: () => setIsLoading(false),
+      });
+    } catch (e) {
+      console.error(e);
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: e instanceof Error ? e.message : "Failed to get response",
+        variant: "destructive",
+      });
+    }
   };
 
-  const suggestions = ["What is phishing?", "How to create a strong password?", "What is malware?", "What is a VPN?"];
+  const suggestions = [
+    "Analyze this email: 'Dear Customer, verify your account immediately or it will be suspended. Click here: bit.ly/xyz123'",
+    "What is phishing and how do I avoid it?",
+    "How do I create a strong password?",
+    "Is this link safe: http://paypa1-secure.tk/login",
+  ];
 
   return (
     <div className="space-y-6 flex flex-col h-[calc(100vh-6rem)]">
       <div>
         <h1 className="text-2xl font-bold text-foreground">AI Security Assistant</h1>
-        <p className="text-sm text-muted-foreground mt-1">Ask any cybersecurity question — get expert answers instantly</p>
+        <p className="text-sm text-muted-foreground mt-1">AI-powered cyber defense — paste suspicious content for instant risk analysis</p>
       </div>
 
       <CyberCard title="CyberGuard Chat" subtitle="AI-powered security advisor" icon={<MessageSquare className="w-5 h-5" />} className="flex-1 flex flex-col min-h-0">
@@ -103,14 +189,14 @@ const AIAssistant = () => {
             </motion.div>
           ))}
 
-          {isTyping && (
+          {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center">
                 <Shield className="w-4 h-4 text-primary" />
               </div>
               <div className="bg-secondary/50 border border-border rounded-xl p-4 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-sm text-muted-foreground">Thinking...</span>
+                <span className="text-sm text-muted-foreground">Analyzing...</span>
               </div>
             </motion.div>
           )}
@@ -123,10 +209,10 @@ const AIAssistant = () => {
             {suggestions.map((s) => (
               <button
                 key={s}
-                onClick={() => { setInput(s); }}
-                className="text-xs px-3 py-1.5 rounded-full border border-primary/20 text-primary hover:bg-primary/10 transition-colors"
+                onClick={() => setInput(s)}
+                className="text-xs px-3 py-1.5 rounded-full border border-primary/20 text-primary hover:bg-primary/10 transition-colors text-left"
               >
-                {s}
+                {s.length > 60 ? s.slice(0, 57) + "..." : s}
               </button>
             ))}
           </div>
@@ -138,11 +224,11 @@ const AIAssistant = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Ask a security question..."
+            placeholder="Paste suspicious content or ask a security question..."
             className="bg-secondary border-border text-sm"
-            disabled={isTyping}
+            disabled={isLoading}
           />
-          <Button onClick={handleSend} disabled={!input.trim() || isTyping} size="icon" className="bg-primary text-primary-foreground hover:bg-primary/90 flex-shrink-0">
+          <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="icon" className="bg-primary text-primary-foreground hover:bg-primary/90 flex-shrink-0">
             <Send className="w-4 h-4" />
           </Button>
         </div>
