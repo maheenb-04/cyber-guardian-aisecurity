@@ -35,7 +35,7 @@ const analyzeLink = (url: string): ScanResult => {
   const explanations = {
     safe: "This URL appears safe. No major red flags were detected.",
     suspicious: "This URL has some concerning features. Proceed with caution and verify the source.",
-    dangerous: "⚠️ This URL shows multiple danger signs. Do NOT visit this link.",
+    dangerous: "DANGER: This URL shows multiple danger signs. Do NOT visit this link.",
   };
 
   return { risk, score, findings, explanation: explanations[risk] };
@@ -61,7 +61,7 @@ const analyzeText = (text: string): ScanResult => {
   const explanations = {
     safe: "This text appears benign. No social engineering or scam indicators found.",
     suspicious: "This text contains some patterns commonly used in scams. Be cautious.",
-    dangerous: "⚠️ This text contains multiple red flags for social engineering or scams.",
+    dangerous: "DANGER: This text contains multiple red flags for social engineering or scams.",
   };
 
   return { risk, score, findings, explanation: explanations[risk] };
