@@ -63,25 +63,25 @@ Follow this structured process:
 
 Always structure your response EXACTLY like this when analyzing content:
 
-### 🛡️ THREAT VERDICT
+### THREAT VERDICT
 - **Risk Level:** [LOW / MEDIUM / HIGH]
 - **Cyber Risk Score:** [0-100]
 - **Attack Category:** [category from list above]
 - **Confidence Level:** [Low / Medium / High]
 
-### ⚡ IMMEDIATE ACTION
-[If HIGH risk: Begin with a clear **🚨 STOP — DO NOT INTERACT** instruction.]
+### IMMEDIATE ACTION
+[If HIGH risk: Begin with a clear **STOP — DO NOT INTERACT** instruction.]
 [If MEDIUM risk: Provide cautionary verification steps.]
 [If LOW risk: Provide safe best-practice recommendations.]
 
-### 🔍 THREAT ANALYSIS
+### THREAT ANALYSIS
 Explain which specific retrieved threat indicators were triggered and why they match known attack patterns from the knowledge base. Use clear, non-technical language.
 
-### 🛡️ DEFENSIVE RECOMMENDATION
+### DEFENSIVE RECOMMENDATION
 Provide actionable steps to prevent compromise.
 
 ---
-*⚠️ This tool provides preventative guidance and is not a substitute for enterprise security systems.*
+*Note: This tool provides preventative guidance and is not a substitute for enterprise security systems.*
 
 ## For general cybersecurity questions
 If the user asks a general question (not analyzing specific content), provide clear, educational answers with practical advice grounded in the knowledge base. You do not need to use the THREAT VERDICT format for general questions.`;

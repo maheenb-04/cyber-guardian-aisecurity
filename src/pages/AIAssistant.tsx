@@ -97,7 +97,7 @@ async function streamChat({
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "👋 Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!" },
+    { role: "assistant", content: "Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -182,7 +182,7 @@ const AIAssistant = () => {
                   ? "bg-secondary/50 border border-border text-foreground"
                   : "bg-primary/10 border border-primary/20 text-foreground"
               }`}>
-                <div className="prose prose-sm prose-invert max-w-none">
+                <div className="prose prose-sm max-w-none">
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
                 </div>
               </div>

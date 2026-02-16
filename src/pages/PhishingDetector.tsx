@@ -45,7 +45,7 @@ const analyzeForPhishing = (text: string): AnalysisResult => {
   const explanations = {
     low: "This message appears relatively safe. No major phishing indicators were found, but always remain cautious with links and attachments from unknown senders.",
     medium: "This message shows some phishing characteristics. Be cautious — verify the sender's identity before clicking any links or providing information.",
-    high: "⚠️ HIGH RISK: This message displays multiple phishing indicators. Do NOT click any links, provide personal info, or reply. Report this to your IT department.",
+    high: "HIGH RISK: This message displays multiple phishing indicators. Do NOT click any links, provide personal info, or reply. Report this to your IT department.",
   };
 
   return { risk, score, indicators, explanation: explanations[risk] };

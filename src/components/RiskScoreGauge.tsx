@@ -20,7 +20,7 @@ const RiskScoreGauge = ({ score }: RiskScoreGaugeProps) => {
     <div className="flex flex-col items-center">
       <div className="relative w-52 h-52">
         <svg className="w-52 h-52 -rotate-90" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="80" fill="none" stroke="hsl(220, 15%, 14%)" strokeWidth="12" />
+          <circle cx="100" cy="100" r="80" fill="none" stroke="hsl(210, 15%, 90%)" strokeWidth="12" />
           <motion.circle
             cx="100"
             cy="100"
