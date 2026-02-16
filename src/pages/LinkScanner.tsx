@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { useSecurity } from "@/contexts/SecurityContext";
 
 interface ScanResult {
   risk: "safe" | "suspicious" | "dangerous";
@@ -71,13 +72,16 @@ const LinkScanner = () => {
   const [textInput, setTextInput] = useState("");
   const [result, setResult] = useState<ScanResult | null>(null);
   const [scanning, setScanning] = useState(false);
+  const { addScanEvent } = useSecurity();
 
   const handleScanLink = () => {
     if (!linkInput.trim()) return;
     setScanning(true);
     setResult(null);
     setTimeout(() => {
-      setResult(analyzeLink(linkInput));
+      const res = analyzeLink(linkInput);
+      setResult(res);
+      addScanEvent({ type: "link", score: res.score });
       setScanning(false);
     }, 1200);
   };
@@ -87,7 +91,9 @@ const LinkScanner = () => {
     setScanning(true);
     setResult(null);
     setTimeout(() => {
-      setResult(analyzeText(textInput));
+      const res = analyzeText(textInput);
+      setResult(res);
+      addScanEvent({ type: "text", score: res.score });
       setScanning(false);
     }, 1200);
   };

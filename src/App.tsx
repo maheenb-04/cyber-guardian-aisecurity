@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "@/components/AppLayout";
+import { SecurityProvider } from "@/contexts/SecurityContext";
 import Dashboard from "./pages/Dashboard";
 import PhishingDetector from "./pages/PhishingDetector";
 import PasswordChecker from "./pages/PasswordChecker";
@@ -19,16 +20,18 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppLayout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/phishing" element={<PhishingDetector />} />
-            <Route path="/password" element={<PasswordChecker />} />
-            <Route path="/scanner" element={<LinkScanner />} />
-            <Route path="/assistant" element={<AIAssistant />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AppLayout>
+        <SecurityProvider>
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/phishing" element={<PhishingDetector />} />
+              <Route path="/password" element={<PasswordChecker />} />
+              <Route path="/scanner" element={<LinkScanner />} />
+              <Route path="/assistant" element={<AIAssistant />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AppLayout>
+        </SecurityProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

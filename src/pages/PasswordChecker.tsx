@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { KeyRound, Eye, EyeOff, CheckCircle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CyberCard from "@/components/CyberCard";
 import { Input } from "@/components/ui/input";
+import { useSecurity } from "@/contexts/SecurityContext";
 
 interface StrengthResult {
   score: number; // 0-100
@@ -48,8 +49,19 @@ const analyzePassword = (pw: string): StrengthResult => {
 const PasswordChecker = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { addScanEvent } = useSecurity();
+  const lastReported = useRef<string>("");
 
   const result = useMemo(() => (password ? analyzePassword(password) : null), [password]);
+
+  // Report password score when user stops typing (debounced via level change)
+  useEffect(() => {
+    if (result && result.level !== lastReported.current) {
+      lastReported.current = result.level;
+      // Invert: weak password = high risk
+      addScanEvent({ type: "password", score: 100 - result.score });
+    }
+  }, [result, addScanEvent]);
 
   const levelColors = {
     weak: "text-destructive",
