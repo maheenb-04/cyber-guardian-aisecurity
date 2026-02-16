@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CyberCard from "@/components/CyberCard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useSecurity } from "@/contexts/SecurityContext";
 
 interface AnalysisResult {
   risk: "low" | "medium" | "high";
@@ -54,13 +55,16 @@ const PhishingDetector = () => {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const { addScanEvent } = useSecurity();
 
   const handleAnalyze = () => {
     if (!input.trim()) return;
     setAnalyzing(true);
     setResult(null);
     setTimeout(() => {
-      setResult(analyzeForPhishing(input));
+      const res = analyzeForPhishing(input);
+      setResult(res);
+      addScanEvent({ type: "phishing", score: res.score });
       setAnalyzing(false);
     }, 1500);
   };
