@@ -97,7 +97,7 @@ async function streamChat({
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!" },
+    { role: "assistant", content: "Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!\n\n---\n\n**Disclaimer:** I am an AI assistant providing general cybersecurity guidance for informational purposes only. My analysis is not a substitute for professional security software or expert advice. Always apply your own judgment and consult qualified professionals for critical security decisions." },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
