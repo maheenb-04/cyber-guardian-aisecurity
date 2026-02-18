@@ -45,6 +45,9 @@
     --input: 212 26% 83%;
     --ring: 216 19% 26%;
 
+    --bubble: 50 80% 94%;
+    --bubble-border: 48 70% 80%;
+
     --radius: 0rem;
 
     --glow-primary: 0 0 15px hsl(215 80% 50% / 0.15);
