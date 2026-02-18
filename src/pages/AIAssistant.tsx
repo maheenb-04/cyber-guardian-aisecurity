@@ -97,7 +97,7 @@ async function streamChat({
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!\n\n---\n\n**Disclaimer:** I am an AI assistant providing general cybersecurity guidance for informational purposes only. My analysis is not a substitute for professional security software or expert advice. Always apply your own judgment and consult qualified professionals for critical security decisions." },
+    { role: "assistant", content: "Hello! I'm your **CyberGuard AI Assistant** — powered by real AI.\n\nI can analyze suspicious emails, links, or messages and assign a **cyber risk score** with a detailed explanation.\n\nPaste any suspicious content, or ask me anything about cybersecurity!" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -179,7 +179,7 @@ const AIAssistant = () => {
               </div>
               <div className={`max-w-[80%] p-4 rounded-xl text-sm ${
                 msg.role === "assistant"
-                  ? "bg-secondary/50 border border-border text-foreground"
+                  ? "bg-[hsl(var(--bubble))] border border-[hsl(var(--bubble-border))] text-foreground"
                   : "bg-primary/10 border border-primary/20 text-foreground"
               }`}>
                 <div className="prose prose-sm max-w-none">
@@ -194,7 +194,7 @@ const AIAssistant = () => {
               <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center">
                 <Shield className="w-4 h-4 text-primary" />
               </div>
-              <div className="bg-secondary/50 border border-border rounded-xl p-4 flex items-center gap-2">
+              <div className="bg-[hsl(var(--bubble))] border border-[hsl(var(--bubble-border))] rounded-xl p-4 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin text-primary" />
                 <span className="text-sm text-muted-foreground">Analyzing...</span>
               </div>
