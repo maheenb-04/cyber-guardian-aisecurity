@@ -113,7 +113,7 @@ const LinkScanner = () => {
 
       <CyberCard title="Scan Content" subtitle="Check links or text for threats" icon={<Link2 className="w-5 h-5" />}>
         <Tabs defaultValue="link" className="w-full">
-          <TabsList className="w-full bg-secondary">
+          <TabsList className="w-full bg-[hsl(var(--bubble))] border border-[hsl(var(--bubble-border))]">
             <TabsTrigger value="link" className="flex-1">URL / Link</TabsTrigger>
             <TabsTrigger value="text" className="flex-1">Text / Message</TabsTrigger>
           </TabsList>
@@ -123,7 +123,7 @@ const LinkScanner = () => {
               value={linkInput}
               onChange={(e) => setLinkInput(e.target.value)}
               placeholder="https://example.com/suspicious-page"
-              className="bg-secondary border-border font-mono text-sm"
+              className="bg-[hsl(var(--bubble))] border-[hsl(var(--bubble-border))] font-mono text-sm"
             />
             <Button onClick={handleScanLink} disabled={!linkInput.trim() || scanning} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
               {scanning ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
@@ -136,7 +136,7 @@ const LinkScanner = () => {
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               placeholder="Paste text content to analyze..."
-              className="min-h-[120px] bg-secondary border-border font-mono text-sm resize-none"
+              className="min-h-[120px] bg-[hsl(var(--bubble))] border-[hsl(var(--bubble-border))] font-mono text-sm resize-none"
             />
             <Button onClick={handleScanText} disabled={!textInput.trim() || scanning} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
               {scanning ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
@@ -160,7 +160,7 @@ const LinkScanner = () => {
                   <span className="text-sm font-semibold">Threat Score</span>
                   <span className={`text-2xl font-bold font-mono ${riskStyles[result.risk].text}`}>{result.score}/100</span>
                 </div>
-                <div className="w-full bg-secondary rounded-full h-2 mt-2">
+                <div className="w-full bg-[hsl(var(--bubble))] rounded-full h-2 mt-2">
                   <motion.div
                     className={`h-2 rounded-full ${riskStyles[result.risk].bar}`}
                     initial={{ width: 0 }}
@@ -182,7 +182,7 @@ const LinkScanner = () => {
                 </div>
               </div>
 
-              <div className="p-4 bg-secondary/50 rounded-lg border border-border">
+              <div className="p-4 bg-[hsl(var(--bubble))] rounded-lg border border-[hsl(var(--bubble-border))]">
                 <p className="text-sm text-foreground">{result.explanation}</p>
               </div>
             </CyberCard>

@@ -87,7 +87,7 @@ const PhishingDetector = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Paste the suspicious email or message here..."
-          className="min-h-[180px] bg-secondary border-border font-mono text-sm resize-none"
+          className="min-h-[180px] bg-[hsl(var(--bubble))] border-[hsl(var(--bubble-border))] font-mono text-sm resize-none"
         />
         <Button
           onClick={handleAnalyze}
@@ -123,7 +123,7 @@ const PhishingDetector = () => {
                   <span className="text-sm font-semibold">Phishing Risk Score</span>
                   <span className="text-2xl font-bold font-mono">{result.score}/100</span>
                 </div>
-                <div className="w-full bg-secondary rounded-full h-2 mt-2">
+                <div className="w-full bg-[hsl(var(--bubble))] rounded-full h-2 mt-2">
                   <motion.div
                     className={`h-2 rounded-full ${result.risk === "low" ? "bg-safe" : result.risk === "medium" ? "bg-warning" : "bg-destructive"}`}
                     initial={{ width: 0 }}
@@ -149,7 +149,7 @@ const PhishingDetector = () => {
               )}
 
               {/* Explanation */}
-              <div className="p-4 bg-secondary/50 rounded-lg border border-border">
+              <div className="p-4 bg-[hsl(var(--bubble))] rounded-lg border border-[hsl(var(--bubble-border))]">
                 <p className="text-sm text-foreground">{result.explanation}</p>
               </div>
             </CyberCard>

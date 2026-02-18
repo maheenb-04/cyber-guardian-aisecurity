@@ -225,7 +225,7 @@ const AIAssistant = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Paste suspicious content or ask a security question..."
-            className="bg-secondary border-border text-sm"
+            className="bg-[hsl(var(--bubble))] border-[hsl(var(--bubble-border))] text-sm"
             disabled={isLoading}
           />
           <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="icon" className="bg-primary text-primary-foreground hover:bg-primary/90 flex-shrink-0">
