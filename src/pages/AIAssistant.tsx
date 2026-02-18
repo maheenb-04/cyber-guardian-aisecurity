@@ -156,7 +156,7 @@ const AIAssistant = () => {
   ];
 
   return (
-    <div className="space-y-6 flex flex-col h-[calc(100vh-6rem)]">
+    <div className="space-y-4 flex flex-col h-[calc(100dvh-8rem)] md:h-[calc(100vh-6rem)]">
       <div>
         <h1 className="text-2xl font-bold text-foreground">AI Security Assistant</h1>
         <p className="text-sm text-muted-foreground mt-1">AI-powered cyber defense — paste suspicious content for instant risk analysis</p>
@@ -164,7 +164,7 @@ const AIAssistant = () => {
 
       <CyberCard title="CyberGuard Chat" subtitle="AI-powered security advisor" icon={<MessageSquare className="w-5 h-5" />} className="flex-1 flex flex-col min-h-0">
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 min-h-0 max-h-[calc(100vh-22rem)]">
+        <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 min-h-0 max-h-[calc(100dvh-24rem)] md:max-h-[calc(100vh-22rem)]">
           {messages.map((msg, i) => (
             <motion.div
               key={i}
