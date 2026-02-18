@@ -21,11 +21,33 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* Welcome / Intro Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="rounded-xl border border-border bg-card p-6 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-grid opacity-5 pointer-events-none" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <Shield className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Welcome to CyberGuard AI</h1>
+            <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+              Your personal cybersecurity assistant — designed to help you identify phishing attempts, evaluate link safety, assess password strength, and understand cyber threats in plain language. Use the tools in the sidebar to start protecting yourself online. All results are advisory and intended for educational guidance.
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
       >
-        <h1 className="text-2xl font-bold text-foreground">Security Dashboard</h1>
+        <h2 className="text-lg font-semibold text-foreground">Security Dashboard</h2>
         <p className="text-sm text-muted-foreground mt-1">Real-time overview of your cyber safety posture</p>
       </motion.div>
 
