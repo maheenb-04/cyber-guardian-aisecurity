@@ -91,7 +91,7 @@ const PasswordChecker = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Type your password..."
-            className="bg-secondary border-border font-mono text-base pr-12"
+            className="bg-[hsl(var(--bubble))] border-[hsl(var(--bubble-border))] font-mono text-base pr-12"
           />
           <button
             onClick={() => setShowPassword(!showPassword)}
@@ -112,7 +112,7 @@ const PasswordChecker = () => {
                     {result.level}
                   </span>
                 </div>
-                <div className="w-full bg-secondary rounded-full h-3">
+                <div className="w-full bg-[hsl(var(--bubble))] rounded-full h-3">
                   <motion.div
                     className={`h-3 rounded-full ${barColors[result.level]}`}
                     initial={{ width: 0 }}
@@ -124,7 +124,7 @@ const PasswordChecker = () => {
               </div>
 
               {/* Crack time */}
-              <div className="p-3 bg-secondary/50 rounded-lg border border-border">
+              <div className="p-3 bg-[hsl(var(--bubble))] rounded-lg border border-[hsl(var(--bubble-border))]">
                 <p className="text-xs text-muted-foreground">Estimated crack time</p>
                 <p className={`text-lg font-bold font-mono ${levelColors[result.level]}`}>{result.crackTime}</p>
               </div>

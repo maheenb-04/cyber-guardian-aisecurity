@@ -100,7 +100,7 @@ const Dashboard = () => {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-4 p-3 rounded-lg bg-secondary/50 border border-border"
+                className="flex items-center gap-4 p-3 rounded-lg bg-[hsl(var(--bubble))] border border-[hsl(var(--bubble-border))]"
               >
                 <div
                   className={`w-2 h-2 rounded-full flex-shrink-0 ${
