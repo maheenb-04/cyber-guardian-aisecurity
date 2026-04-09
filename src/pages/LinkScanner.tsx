@@ -149,12 +149,24 @@ const LinkScanner = () => {
       <AnimatePresence>
         {result && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <CyberCard
-              title="Scan Results"
-              subtitle={`Verdict: ${result.risk.toUpperCase()}`}
-              icon={result.risk === "safe" ? <CheckCircle className="w-5 h-5 text-safe" /> : <AlertTriangle className="w-5 h-5 text-destructive" />}
-              glowColor={result.risk === "dangerous" ? "destructive" : result.risk === "suspicious" ? "primary" : "accent"}
-            >
+            <div className={`bg-card border border-border rounded-lg p-6 backdrop-blur-sm animate-fade-in-up relative ${
+              result.risk === "safe" ? "border-l-4 border-l-safe" :
+              result.risk === "suspicious" ? "border-l-4 border-l-warning" :
+              "border-l-4 border-l-destructive animate-pulse-border"
+            }`}>
+              <div className="absolute top-4 right-4">
+                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded ${
+                  result.risk === "safe" ? "bg-safe text-safe-foreground" :
+                  result.risk === "suspicious" ? "bg-warning text-warning-foreground" :
+                  "bg-destructive text-destructive-foreground"
+                }`}>
+                  {result.risk === "safe" ? "SAFE" : result.risk === "suspicious" ? "WARNING" : "THREAT"}
+                </span>
+              </div>
+
+              <h3 className="text-base font-semibold text-foreground mb-1">Scan Results</h3>
+              <p className="text-xs text-muted-foreground mb-4">Verdict: {result.risk.toUpperCase()}</p>
+
               <div className={`p-4 rounded-lg border mb-4 ${riskStyles[result.risk].border} ${riskStyles[result.risk].bg}`}>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold">Threat Score</span>
@@ -185,7 +197,7 @@ const LinkScanner = () => {
               <div className="p-4 bg-[hsl(var(--bubble))] rounded-lg border border-[hsl(var(--bubble-border))]">
                 <p className="text-sm text-foreground">{result.explanation}</p>
               </div>
-            </CyberCard>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
