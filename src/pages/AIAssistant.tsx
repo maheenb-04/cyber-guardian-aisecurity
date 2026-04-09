@@ -156,7 +156,7 @@ const AIAssistant = () => {
   ];
 
   return (
-    <div className="space-y-4 flex flex-col h-[calc(100dvh-8rem)] md:h-[calc(100vh-6rem)]">
+    <div className="space-y-4 flex flex-col h-[calc(100dvh-8rem)] max-w-3xl mx-auto px-4 py-8">
       <div>
         <h1 className="text-2xl font-bold text-foreground">AI Security Assistant</h1>
         <p className="text-sm text-muted-foreground mt-1">AI-powered cyber defense — paste suspicious content for instant risk analysis</p>

@@ -20,7 +20,7 @@ const Dashboard = () => {
     score === undefined ? "safe" : score <= 25 ? "safe" : score <= 55 ? "warning" : "danger";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-5xl mx-auto px-4 py-8">
       {/* Welcome / Intro Banner */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}

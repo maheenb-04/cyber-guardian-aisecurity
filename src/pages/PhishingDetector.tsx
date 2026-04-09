@@ -76,7 +76,7 @@ const PhishingDetector = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-3xl mx-auto px-4 py-8">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Phishing Detector</h1>
         <p className="text-sm text-muted-foreground mt-1">Paste an email or message to analyze for phishing indicators</p>
@@ -111,13 +111,24 @@ const PhishingDetector = () => {
       <AnimatePresence>
         {result && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <CyberCard
-              title="Analysis Results"
-              subtitle={`Risk Level: ${result.risk.toUpperCase()}`}
-              icon={result.risk === "low" ? <CheckCircle className="w-5 h-5 text-safe" /> : <AlertTriangle className="w-5 h-5 text-destructive" />}
-              glowColor={result.risk === "high" ? "destructive" : result.risk === "medium" ? "primary" : "accent"}
-            >
-              {/* Score */}
+            <div className={`bg-card border border-border rounded-lg p-6 backdrop-blur-sm animate-fade-in-up relative ${
+              result.risk === "low" ? "border-l-4 border-l-safe" :
+              result.risk === "medium" ? "border-l-4 border-l-warning" :
+              "border-l-4 border-l-destructive animate-pulse-border"
+            }`}>
+              <div className="absolute top-4 right-4">
+                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded ${
+                  result.risk === "low" ? "bg-safe text-safe-foreground" :
+                  result.risk === "medium" ? "bg-warning text-warning-foreground" :
+                  "bg-destructive text-destructive-foreground"
+                }`}>
+                  {result.risk === "low" ? "SAFE" : result.risk === "medium" ? "WARNING" : "THREAT"}
+                </span>
+              </div>
+
+              <h3 className="text-base font-semibold text-foreground mb-1">Analysis Results</h3>
+              <p className="text-xs text-muted-foreground mb-4">Risk Level: {result.risk.toUpperCase()}</p>
+
               <div className={`p-4 rounded-lg border mb-4 ${riskColors[result.risk]}`}>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold">Phishing Risk Score</span>
@@ -133,7 +144,6 @@ const PhishingDetector = () => {
                 </div>
               </div>
 
-              {/* Indicators */}
               {result.indicators.length > 0 && (
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-foreground mb-2">Detected Indicators</h4>
@@ -148,11 +158,10 @@ const PhishingDetector = () => {
                 </div>
               )}
 
-              {/* Explanation */}
               <div className="p-4 bg-[hsl(var(--bubble))] rounded-lg border border-[hsl(var(--bubble-border))]">
                 <p className="text-sm text-foreground">{result.explanation}</p>
               </div>
-            </CyberCard>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
