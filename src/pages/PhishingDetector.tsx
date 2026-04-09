@@ -76,7 +76,7 @@ const PhishingDetector = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-3xl mx-auto px-4 py-8">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Phishing Detector</h1>
         <p className="text-sm text-muted-foreground mt-1">Paste an email or message to analyze for phishing indicators</p>
