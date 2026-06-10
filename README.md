@@ -28,4 +28,4 @@ Clone the repo and install dependencies with `npm install`. Copy `.env.example` 
 
 ## Project Context
 
-Built as a capstone project for an AI prompt engineering accelerator program.
+Built as a capstone project for Bronx Tech Hub Prompt Engineering Accelerator 6-week fellowship targeting Generative AI, responsible AI systems, and real-world deployment.
